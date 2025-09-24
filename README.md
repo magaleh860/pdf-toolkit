@@ -1,4 +1,4 @@
-# PDF Forge
+# PDF Toolkit
 
 **Privacy-first PDF toolkit** — merge, split, rotate, and secure PDF files without uploading them to shady online services.  
 Built with TypeScript, React, and Node.js.
