@@ -1,5 +1,19 @@
 {
-  "dependencies": {
-    "pdf-lib": "^1.17.1"
+  "name": "pdf-toolkit",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "pnpm@8.8.0",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "bootstrap": "pnpm install",
+    "build": "pnpm -w -r build",
+    "test": "pnpm -w -r test",
+    "smoke": "node scripts/make-fixtures.js && node packages/pdf-cli/bin/merge.js merge TestPDFFiles/merged-out.pdf TestPDFFiles/pdf1.pdf TestPDFFiles/pdf2.pdf"
   }
 }
