@@ -6,7 +6,7 @@
 
 ## V0 — Core
 - [x] Merge two or more PDFs (CLI + core library)
-- [ ] Publish `@pdf-toolkit/pdf-core` and `@pdf-toolkit/pdf-cli` to npm
+##- [ ] Publish `@pdf-toolkit/pdf-core` and `@pdf-toolkit/pdf-cli` to npm
 
 ## V1 — Web App
 - [ ] Drag & drop PDF files
