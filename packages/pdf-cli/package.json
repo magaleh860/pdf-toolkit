@@ -1,0 +1,14 @@
+{
+  "name": "@pdf-toolkit/pdf-cli",
+  "version": "0.1.0",
+  "bin": {
+    "pdf-merge": "bin/merge.js"
+  },
+  "dependencies": {
+    "@pdf-toolkit/pdf-core": "workspace:0.1.0"
+  }
+  ,"scripts":{
+    "build":"echo \"build pdf-cli (noop)\"",
+    "test":"node -e \"console.log('no tests for pdf-cli')\""
+  }
+}

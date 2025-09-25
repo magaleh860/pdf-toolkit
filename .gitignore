@@ -6,3 +6,7 @@ coverage/
 .env.*
 *.log
 .DS_Store
+.github/
+
+# lockfile for npm (we use pnpm)
+package-lock.json
