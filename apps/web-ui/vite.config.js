@@ -1,9 +1,23 @@
 import { defineConfig } from 'vite';
 import path from 'path';
+import react from '@vitejs/plugin-react';
 
-// Vite config for static site with SCSS and vendor libs
+// Vite config for static site with PDF.js worker support
 export default defineConfig({
-  server: { host: '127.0.0.1' /*true*/, port: 3000, strictPort: true },
+  plugins: [react()],
+  optimizeDeps: {
+    include: ['pdfjs-dist']
+  },
+  // Enable history API fallback for client-side routing
+  server: {
+    historyApiFallback: true,
+  },
+  resolve: {
+    alias: {
+      'pdfjs-dist': path.resolve(__dirname, 'node_modules/pdfjs-dist'),
+    },
+  },
+  server: { host: '127.0.0.1', port: 5173, strictPort: false },
   base: './',
   build: {
     outDir: 'dist',

@@ -1,3 +1,25 @@
+.split-pages-list {
+  margin-bottom: 20px;
+}
+.split-pages-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  max-height: 180px;
+  overflow-y: auto;
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 10px 8px;
+  border: 1px solid #e5e7eb;
+}
+.split-page-checkbox {
+  font-size: 15px;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 90px;
+}
 body { 
   font-family: system-ui, -apple-system, sans-serif; 
   margin: 0; 
@@ -9,6 +31,52 @@ body {
 .app { 
   max-width: 800px; 
   margin: 0 auto;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.tab {
+  padding: 10px 24px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 6px 6px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.tab.active {
+  background: #fff;
+  color: #2563eb;
+  border-bottom: 2px solid #2563eb;
+  z-index: 1;
+}
+
+.split-section {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  padding: 32px 24px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.split-upload {
+  margin-bottom: 20px;
+}
+.split-range {
+  margin-bottom: 20px;
+}
+.split-range-input {
+  margin-left: 8px;
+  padding: 6px 10px;
+  font-size: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  width: 180px;
 }
 
 h1 {
