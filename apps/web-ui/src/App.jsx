@@ -1,6 +1,10 @@
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { PDFDocument } from 'pdf-lib'
+import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
+
+// Set worker source to the bundled worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'
 
 export default function App() {
   const [tab, setTab] = useState('merge') // 'merge' or 'split'
@@ -9,7 +13,9 @@ export default function App() {
   const [dragActive, setDragActive] = useState(false)
   // Split state
   const [splitFile, setSplitFile] = useState(null)
-  const [splitRange, setSplitRange] = useState('')
+  const [splitPageCount, setSplitPageCount] = useState(0)
+  const [splitSelectedPages, setSplitSelectedPages] = useState([])
+  const [splitPageThumbs, setSplitPageThumbs] = useState([]) // array of data URLs
 
 
   function onChange(e) {
@@ -18,7 +24,50 @@ export default function App() {
   }
 
   function onSplitFileChange(e) {
-    setSplitFile(e.target.files && e.target.files[0] ? e.target.files[0] : null)
+    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null
+    setSplitFile(file)
+    setSplitPageCount(0)
+    setSplitSelectedPages([])
+    setSplitPageThumbs([])
+    if (file) {
+      // Load page count and thumbnails
+      file.arrayBuffer().then(async (bytes) => {
+        try {
+          // Get page count with pdf-lib
+          const pdf = await PDFDocument.load(bytes)
+          const pageCount = pdf.getPageCount()
+          setSplitPageCount(pageCount)
+          setSplitSelectedPages(Array.from({ length: pageCount }, (_, i) => i)) // default: all selected
+
+          // Render thumbnails with pdfjs-dist
+          const loadingTask = pdfjsLib.getDocument({ data: bytes })
+          const pdfjsDoc = await loadingTask.promise
+          const thumbs = []
+          for (let i = 1; i <= pageCount; ++i) {
+            const page = await pdfjsDoc.getPage(i)
+            const viewport = page.getViewport({ scale: 0.18 }) // small preview
+            const canvas = document.createElement('canvas')
+            canvas.width = viewport.width
+            canvas.height = viewport.height
+            const ctx = canvas.getContext('2d')
+            await page.render({ canvasContext: ctx, viewport }).promise
+            thumbs.push(canvas.toDataURL())
+          }
+          setSplitPageThumbs(thumbs)
+        } catch {
+          setSplitPageCount(0)
+          setSplitSelectedPages([])
+          setSplitPageThumbs([])
+        }
+      })
+    }
+  }
+
+  function toggleSplitPage(idx) {
+    setSplitSelectedPages(prev => prev.includes(idx)
+      ? prev.filter(i => i !== idx)
+      : [...prev, idx].sort((a, b) => a - b)
+    )
   }
 
   const handleDrag = useCallback((e) => {
@@ -109,12 +158,12 @@ export default function App() {
   }
 
   async function split() {
-    if (!splitFile || !splitRange) return
+    if (!splitFile || !splitSelectedPages.length) return
     setBusy(true)
     try {
       const bytes = await splitFile.arrayBuffer()
       const src = await PDFDocument.load(bytes)
-      const pageIndices = parsePageRange(splitRange, src.getPageCount())
+      const pageIndices = splitSelectedPages
       if (!pageIndices.length) throw new Error('No valid pages selected')
       const outPdf = await PDFDocument.create()
       const pages = await outPdf.copyPages(src, pageIndices)
@@ -250,23 +299,33 @@ export default function App() {
               </div>
             )}
           </div>
-          <div className="split-range">
-            <label>
-              Pages to extract (e.g. 1,3-5):
-              <input
-                type="text"
-                value={splitRange}
-                onChange={e => setSplitRange(e.target.value)}
-                placeholder="e.g. 1,3-5"
-                className="split-range-input"
-                disabled={!splitFile || busy}
-              />
-            </label>
-          </div>
+          {splitFile && splitPageCount > 0 && (
+            <div className="split-pages-list">
+              <div style={{marginBottom: 8, color: '#374151', fontWeight: 500}}>
+                Select pages to extract:
+              </div>
+              <div className="split-pages-checkboxes">
+                {Array.from({ length: splitPageCount }, (_, i) => (
+                  <label key={i} className="split-page-checkbox" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 90}}>
+                    <input
+                      type="checkbox"
+                      checked={splitSelectedPages.includes(i)}
+                      onChange={() => toggleSplitPage(i)}
+                      disabled={busy}
+                    />
+                    <span style={{fontSize: 13}}>Page {i + 1}</span>
+                    {splitPageThumbs[i] && (
+                      <img src={splitPageThumbs[i]} alt={`Page ${i+1}`} style={{marginTop: 4, width: 60, height: 'auto', border: '1px solid #e5e7eb', borderRadius: 3, background: '#fff'}} />
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="actions">
             <button
               onClick={split}
-              disabled={!splitFile || !splitRange || busy}
+              disabled={!splitFile || !splitSelectedPages.length || busy}
               className="merge-button"
             >
               {busy ? 'Splitting...' : 'Split PDF'}
