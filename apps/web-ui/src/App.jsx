@@ -1,355 +1,51 @@
-
-import React, { useState, useCallback, useEffect } from 'react'
-import { PDFDocument } from 'pdf-lib'
-import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
+import React from 'react'
+import { BrowserRouter, Routes, Route, NavLink, useLocation } from 'react-router-dom'
+import { MergePage } from './pages/MergePage'
+import { SplitPage } from './pages/SplitPage'
+import { LandingPage } from './pages/LandingPage'
+import './styles/landing.css'
 
 // Set worker source to the bundled worker
+import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'
 
-export default function App() {
-  const [tab, setTab] = useState('merge') // 'merge' or 'split'
-  const [files, setFiles] = useState([])
-  const [busy, setBusy] = useState(false)
-  const [dragActive, setDragActive] = useState(false)
-  // Split state
-  const [splitFile, setSplitFile] = useState(null)
-  const [splitPageCount, setSplitPageCount] = useState(0)
-  const [splitSelectedPages, setSplitSelectedPages] = useState([])
-  const [splitPageThumbs, setSplitPageThumbs] = useState([]) // array of data URLs
-
-
-  function onChange(e) {
-    const newFiles = Array.from(e.target.files || [])
-    setFiles(prev => [...prev, ...newFiles.filter(f => !prev.find(p => p.name === f.name))])
-  }
-
-  function clearSplitFile() {
-    setSplitFile(null)
-    setSplitPageCount(0)
-    setSplitSelectedPages([])
-    setSplitPageThumbs([])
-  }
-
-  function onSplitFileChange(e) {
-    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null
-    setSplitFile(file)
-    setSplitPageCount(0)
-    setSplitSelectedPages([])
-    setSplitPageThumbs([])
-    if (file) {
-      // Load page count and thumbnails
-      file.arrayBuffer().then(async (bytes) => {
-        try {
-          // Get page count with pdf-lib
-          const pdf = await PDFDocument.load(bytes)
-          const pageCount = pdf.getPageCount()
-          setSplitPageCount(pageCount)
-          setSplitSelectedPages(Array.from({ length: pageCount }, (_, i) => i)) // default: all selected
-
-          // Render thumbnails with pdfjs-dist
-          const loadingTask = pdfjsLib.getDocument({ data: bytes })
-          const pdfjsDoc = await loadingTask.promise
-          const thumbs = []
-          for (let i = 1; i <= pageCount; ++i) {
-            const page = await pdfjsDoc.getPage(i)
-            const viewport = page.getViewport({ scale: 0.4 }) // larger preview
-            const canvas = document.createElement('canvas')
-            canvas.width = viewport.width
-            canvas.height = viewport.height
-            const ctx = canvas.getContext('2d')
-            await page.render({ canvasContext: ctx, viewport }).promise
-            thumbs.push(canvas.toDataURL())
-          }
-          setSplitPageThumbs(thumbs)
-        } catch {
-          setSplitPageCount(0)
-          setSplitSelectedPages([])
-          setSplitPageThumbs([])
-        }
-      })
-    }
-  }
-
-  function toggleSplitPage(idx) {
-    setSplitSelectedPages(prev => prev.includes(idx)
-      ? prev.filter(i => i !== idx)
-      : [...prev, idx].sort((a, b) => a - b)
-    )
-  }
-
-  const handleDrag = useCallback((e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true)
-    } else if (e.type === "dragleave") {
-      setDragActive(false)
-    }
-  }, [])
-
-  const handleDrop = useCallback((e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-    
-    const newFiles = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf')
-    if (newFiles.length) {
-      setFiles(prev => [...prev, ...newFiles.filter(f => !prev.find(p => p.name === f.name))])
-    }
-  }, [])
-
-  function removeFile(index) {
-    setFiles(prev => prev.filter((_, i) => i !== index))
-  }
-
-  function moveFile(index, direction) {
-    setFiles(prev => {
-      const newFiles = [...prev]
-      const temp = newFiles[index]
-      newFiles[index] = newFiles[index + direction]
-      newFiles[index + direction] = temp
-      return newFiles
-    })
-  }
-
-
-  async function merge() {
-    if (!files.length) return
-    setBusy(true)
-    try {
-      const mergedPdf = await PDFDocument.create()
-      for (const f of files) {
-        const bytes = await f.arrayBuffer()
-        const src = await PDFDocument.load(bytes)
-        const pages = await mergedPdf.copyPages(src, src.getPageIndices())
-        pages.forEach(p => mergedPdf.addPage(p))
-      }
-      const mergedBytes = await mergedPdf.save()
-      const blob = new Blob([mergedBytes], { type: 'application/pdf' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'merged.pdf'
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(url)
-    } catch (err) {
-      console.error(err)
-      alert('Error merging PDFs: ' + (err.message || err))
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  // Parse a range string like "1,3-5" into an array of 0-based page indices
-  function parsePageRange(range, pageCount) {
-    const result = []
-    const parts = (range || '').split(',').map(s => s.trim()).filter(Boolean)
-    for (const part of parts) {
-      if (/^\d+$/.test(part)) {
-        const idx = parseInt(part, 10) - 1
-        if (idx >= 0 && idx < pageCount) result.push(idx)
-      } else if (/^(\d+)-(\d+)$/.test(part)) {
-        const [, start, end] = part.match(/(\d+)-(\d+)/)
-        let s = parseInt(start, 10) - 1
-        let e = parseInt(end, 10) - 1
-        if (s > e) [s, e] = [e, s]
-        for (let i = s; i <= e; ++i) {
-          if (i >= 0 && i < pageCount) result.push(i)
-        }
-      }
-    }
-    // Remove duplicates and sort
-    return Array.from(new Set(result)).sort((a, b) => a - b)
-  }
-
-  async function split() {
-    if (!splitFile || !splitSelectedPages.length) return
-    setBusy(true)
-    try {
-      const bytes = await splitFile.arrayBuffer()
-      const src = await PDFDocument.load(bytes)
-      const pageIndices = splitSelectedPages
-      if (!pageIndices.length) throw new Error('No valid pages selected')
-      const outPdf = await PDFDocument.create()
-      const pages = await outPdf.copyPages(src, pageIndices)
-      pages.forEach(p => outPdf.addPage(p))
-      const outBytes = await outPdf.save()
-      const blob = new Blob([outBytes], { type: 'application/pdf' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'split.pdf'
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(url)
-    } catch (err) {
-      console.error(err)
-      alert('Error splitting PDF: ' + (err.message || err))
-    } finally {
-      setBusy(false)
-    }
-  }
+// Navigation component
+function Navigation() {
+  const location = useLocation()
+  // Don't show navigation on landing page
+  if (location.pathname === '/') return null
 
   return (
-    <div className="app">
-      <h1>PDF Toolkit — Web UI</h1>
-      <div className="tabs">
-        <button className={tab === 'merge' ? 'tab active' : 'tab'} onClick={() => setTab('merge')}>Merge PDFs</button>
-        <button className={tab === 'split' ? 'tab active' : 'tab'} onClick={() => setTab('split')}>Split PDF</button>
+    <nav className="tabs">
+      <NavLink 
+        to="/merge" 
+        className={({ isActive }) => isActive ? 'tab active' : 'tab'}
+      >
+        Merge PDFs
+      </NavLink>
+      <NavLink 
+        to="/split" 
+        className={({ isActive }) => isActive ? 'tab active' : 'tab'}
+      >
+        Split PDF
+      </NavLink>
+    </nav>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <div className="app">
+        <h1>PDF Toolkit — Web UI</h1>
+        <Navigation />
+
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/merge" element={<MergePage />} />
+          <Route path="/split" element={<SplitPage />} />
+        </Routes>
       </div>
-
-      {tab === 'merge' && (
-        <>
-          <div 
-            className={`drop-zone ${dragActive ? 'active' : ''}`}
-            onDragEnter={handleDrag}
-            onDragOver={handleDrag}
-            onDragLeave={handleDrag}
-            onDrop={handleDrop}
-          >
-            <p>
-              Drop PDF files here or{' '}
-              <label className="file-input-label">
-                browse
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  multiple
-                  onChange={onChange}
-                  className="file-input"
-                />
-              </label>
-            </p>
-            <p className="help-text">Select multiple files to merge them in order</p>
-          </div>
-
-          <div className="files">
-            {files.length > 0 && (
-              <div className="files-header">
-                {files.length} PDF file{files.length !== 1 ? 's' : ''} selected
-              </div>
-            )}
-            {files.map((f, i) => (
-              <div key={i} className="file-item">
-                <div className="file-info">
-                  <span className="file-name">{f.name}</span>
-                  <span className="file-size">
-                    {(f.size / 1024 / 1024).toFixed(1)} MB
-                  </span>
-                </div>
-                <div className="file-actions">
-                  {i > 0 && (
-                    <button
-                      onClick={() => moveFile(i, -1)}
-                      className="icon-button"
-                      title="Move up"
-                    >
-                      ↑
-                    </button>
-                  )}
-                  {i < files.length - 1 && (
-                    <button
-                      onClick={() => moveFile(i, 1)}
-                      className="icon-button"
-                      title="Move down"
-                    >
-                      ↓
-                    </button>
-                  )}
-                  <button
-                    onClick={() => removeFile(i)}
-                    className="icon-button remove"
-                    title="Remove"
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {files.length > 0 && (
-            <div className="actions">
-              <button 
-                onClick={merge} 
-                disabled={busy} 
-                className="merge-button"
-              >
-                {busy ? 'Merging...' : `Merge ${files.length} PDF file${files.length !== 1 ? 's' : ''}`}
-              </button>
-            </div>
-          )}
-        </>
-      )}
-
-      {tab === 'split' && (
-        <div className="split-section">
-          <div className="split-upload">
-            <label className="file-input-label">
-              Choose PDF to split
-              <input
-                type="file"
-                accept="application/pdf"
-                onChange={onSplitFileChange}
-                className="file-input"
-              />
-            </label>
-            {splitFile && (
-              <div className="file-item">
-                <div className="file-info">
-                  <span className="file-name">{splitFile.name}</span>
-                  <span className="file-size">{(splitFile.size / 1024 / 1024).toFixed(1)} MB</span>
-                </div>
-                <div className="file-actions">
-                  <button
-                    onClick={clearSplitFile}
-                    className="icon-button remove"
-                    title="Remove file"
-                    style={{ color: '#dc2626' }} /* red-600 color */
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-          {splitFile && splitPageCount > 0 && (
-            <div className="split-pages-list">
-              <div style={{marginBottom: 8, color: '#374151', fontWeight: 500}}>
-                Select pages to extract:
-              </div>
-              <div className="split-pages-checkboxes">
-                {Array.from({ length: splitPageCount }, (_, i) => (
-                  <label key={i} className="split-page-checkbox" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 160}}>
-                    <input
-                      type="checkbox"
-                      checked={splitSelectedPages.includes(i)}
-                      onChange={() => toggleSplitPage(i)}
-                      disabled={busy}
-                    />
-                    <span style={{fontSize: 13}}>Page {i + 1}</span>
-                    {splitPageThumbs[i] && (
-                      <img src={splitPageThumbs[i]} alt={`Page ${i+1}`} style={{marginTop: 4, width: 140, height: 'auto', border: '1px solid #e5e7eb', borderRadius: 3, background: '#fff'}} />
-                    )}
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-          <div className="actions">
-            <button
-              onClick={split}
-              disabled={!splitFile || !splitSelectedPages.length || busy}
-              className="merge-button"
-            >
-              {busy ? 'Splitting...' : 'Split PDF'}
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
+    </BrowserRouter>
   )
 }

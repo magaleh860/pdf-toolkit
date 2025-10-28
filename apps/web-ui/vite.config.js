@@ -6,7 +6,11 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
-    include: ['pdfjs-dist'],
+    include: ['pdfjs-dist']
+  },
+  // Enable history API fallback for client-side routing
+  server: {
+    historyApiFallback: true,
   },
   resolve: {
     alias: {
