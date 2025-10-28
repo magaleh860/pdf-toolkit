@@ -15,6 +15,11 @@ export function LandingPage() {
           <p>Extract specific pages from a PDF document</p>
           <div className="feature-icon">✂️</div>
         </Link>
+        <Link to="/edit" className="feature-card">
+          <h2>Edit PDF</h2>
+          <p>Rotate, delete, and rearrange PDF pages</p>
+          <div className="feature-icon">✏️</div>
+        </Link>
       </div>
     </div>
   )
