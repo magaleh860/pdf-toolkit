@@ -23,6 +23,13 @@ export default function App() {
     setFiles(prev => [...prev, ...newFiles.filter(f => !prev.find(p => p.name === f.name))])
   }
 
+  function clearSplitFile() {
+    setSplitFile(null)
+    setSplitPageCount(0)
+    setSplitSelectedPages([])
+    setSplitPageThumbs([])
+  }
+
   function onSplitFileChange(e) {
     const file = e.target.files && e.target.files[0] ? e.target.files[0] : null
     setSplitFile(file)
@@ -45,7 +52,7 @@ export default function App() {
           const thumbs = []
           for (let i = 1; i <= pageCount; ++i) {
             const page = await pdfjsDoc.getPage(i)
-            const viewport = page.getViewport({ scale: 0.18 }) // small preview
+            const viewport = page.getViewport({ scale: 0.4 }) // larger preview
             const canvas = document.createElement('canvas')
             canvas.width = viewport.width
             canvas.height = viewport.height
@@ -296,6 +303,16 @@ export default function App() {
                   <span className="file-name">{splitFile.name}</span>
                   <span className="file-size">{(splitFile.size / 1024 / 1024).toFixed(1)} MB</span>
                 </div>
+                <div className="file-actions">
+                  <button
+                    onClick={clearSplitFile}
+                    className="icon-button remove"
+                    title="Remove file"
+                    style={{ color: '#dc2626' }} /* red-600 color */
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -306,7 +323,7 @@ export default function App() {
               </div>
               <div className="split-pages-checkboxes">
                 {Array.from({ length: splitPageCount }, (_, i) => (
-                  <label key={i} className="split-page-checkbox" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 90}}>
+                  <label key={i} className="split-page-checkbox" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 160}}>
                     <input
                       type="checkbox"
                       checked={splitSelectedPages.includes(i)}
@@ -315,7 +332,7 @@ export default function App() {
                     />
                     <span style={{fontSize: 13}}>Page {i + 1}</span>
                     {splitPageThumbs[i] && (
-                      <img src={splitPageThumbs[i]} alt={`Page ${i+1}`} style={{marginTop: 4, width: 60, height: 'auto', border: '1px solid #e5e7eb', borderRadius: 3, background: '#fff'}} />
+                      <img src={splitPageThumbs[i]} alt={`Page ${i+1}`} style={{marginTop: 4, width: 140, height: 'auto', border: '1px solid #e5e7eb', borderRadius: 3, background: '#fff'}} />
                     )}
                   </label>
                 ))}
