@@ -25,4 +25,16 @@ describe('pdf-cli split command', () => {
       execSync(`node ${cli} ${pdf1} -p 999 -o ${out}`);
     }).toThrow();
   });
+
+  it('splits all pages if no -p', () => {
+    execSync(`node ${cli} ${pdf1} -o ${out}`);
+    expect(fs.existsSync(out)).toBe(true);
+    fs.unlinkSync(out);
+  });
+
+  it('fails with no output flag', () => {
+    expect(() => {
+      execSync(`node ${cli} ${pdf1} -p 1`);
+    }).toThrow();
+  });
 });

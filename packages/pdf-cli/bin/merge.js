@@ -14,8 +14,8 @@ async function main() {
       inputs.push(args[i]);
     }
   }
-  if (!out || inputs.length < 2) {
-    console.error('Usage: pdf-merge <input1.pdf> <input2.pdf> ... -o <output.pdf>');
+  if (!out || inputs.length < 1) {
+    console.error('Usage: pdf-merge <input1.pdf> [input2.pdf ...] -o <output.pdf>');
     process.exit(2);
   }
   try {

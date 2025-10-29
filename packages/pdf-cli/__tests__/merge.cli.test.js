@@ -27,4 +27,16 @@ describe('pdf-cli merge command', () => {
       execSync(`node ${cli} ${missing} ${pdf2} -o ${out}`);
     }).toThrow();
   });
+
+  it('merges single PDF (should copy)', () => {
+    execSync(`node ${cli} ${pdf1} -o ${out}`);
+    expect(fs.existsSync(out)).toBe(true);
+    fs.unlinkSync(out);
+  });
+
+  it('fails with no output flag', () => {
+    expect(() => {
+      execSync(`node ${cli} ${pdf1} ${pdf2}`);
+    }).toThrow();
+  });
 });

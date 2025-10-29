@@ -86,7 +86,10 @@ async function main() {
     rotations: rotations || {},
     deletions: []
   };
-  // Optionally support --delete in future
+  if (Object.keys(options.rotations).length === 0 && options.deletions.length === 0) {
+    console.error('Error: At least one of --rotate or --delete must be specified');
+    process.exit(2);
+  }
   try {
     await editPages(inputFile, outputFile, options);
     const actions = [];

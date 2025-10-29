@@ -25,4 +25,22 @@ describe('pdf-cli edit command', () => {
       execSync(`node ${cli} ${pdf1} --rotate 999:90 -o ${out}`);
     }).toThrow();
   });
+
+  it('fails with no --rotate', () => {
+    expect(() => {
+      execSync(`node ${cli} ${pdf1} -o ${out}`);
+    }).toThrow();
+  });
+
+  it('fails with invalid rotation value', () => {
+    expect(() => {
+      execSync(`node ${cli} ${pdf1} --rotate 1:abc -o ${out}`);
+    }).toThrow();
+  });
+
+  it('fails with no output flag', () => {
+    expect(() => {
+      execSync(`node ${cli} ${pdf1} --rotate 1:90`);
+    }).toThrow();
+  });
 });
