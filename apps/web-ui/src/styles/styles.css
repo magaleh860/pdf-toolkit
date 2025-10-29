@@ -118,6 +118,16 @@ body::before {
   -webkit-text-fill-color: transparent;
 }
 
+.header-title {
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.header-title:hover {
+  opacity: 0.8;
+}
+
 .header-actions {
   display: flex;
   align-items: center;

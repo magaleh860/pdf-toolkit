@@ -52,7 +52,9 @@ export default function App() {
     <BrowserRouter>
       <div className="app">
         <header className="app-header">
-          <h1>PDF Toolkit</h1>
+          <Link to="/" className="header-title">
+            <h1>PDF Toolkit</h1>
+          </Link>
           <div className="header-actions">
             <Link to="/about" className="about-nav-link">
               <FontAwesomeIcon icon={faInfoCircle} /> About
