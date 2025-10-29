@@ -8,7 +8,10 @@
   }
   ,"scripts":{
     "build":"echo \"build pdf-core (noop)\"",
-    "test":"node -e \"console.log('no tests for pdf-core')\""
+    "test":"vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.4"
   }
 }
 
