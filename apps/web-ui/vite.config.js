@@ -8,10 +8,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['pdfjs-dist']
   },
-  // Enable history API fallback for client-side routing
-  server: {
-    historyApiFallback: true,
-  },
+  // SPA routing is handled by Vite's default index.html fallback
   resolve: {
     alias: {
       'pdfjs-dist': path.resolve(__dirname, 'node_modules/pdfjs-dist'),

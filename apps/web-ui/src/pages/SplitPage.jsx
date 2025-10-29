@@ -4,6 +4,7 @@ import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
 import { PageThumbnails } from '../components/PageThumbnails'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FileDropZone } from '../components/FileDropZone'
 
 export function SplitPage() {
   const [busy, setBusy] = useState(false)
@@ -19,8 +20,7 @@ export function SplitPage() {
     setSplitPageThumbs([])
   }
 
-  function onSplitFileChange(e) {
-    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null
+  function processSplitFile(file) {
     setSplitFile(file)
     setSplitPageCount(0)
     setSplitSelectedPages([])
@@ -98,15 +98,12 @@ export function SplitPage() {
   return (
     <div className="split-section">
       <div className="split-upload">
-        <label className="file-input-label">
-          Choose PDF to split
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={onSplitFileChange}
-            className="file-input"
-          />
-        </label>
+        <FileDropZone
+          onFiles={(files) => processSplitFile(files[0])}
+          multiple={false}
+          accept="application/pdf"
+          helpText="Select a single PDF to split into pages"
+        />
         {splitFile && (
           <div className="file-item">
             <div className="file-info">
@@ -140,15 +137,17 @@ export function SplitPage() {
         </div>
       )}
 
-      <div className="actions">
-        <button
-          onClick={split}
-          disabled={!splitFile || !splitSelectedPages.length || busy}
-          className="merge-button"
-        >
-          {busy ? 'Splitting...' : 'Split PDF'}
-        </button>
-      </div>
+      {splitFile && (
+        <div className="actions">
+          <button
+            onClick={split}
+            disabled={!splitSelectedPages.length || busy}
+            className="merge-button"
+          >
+            {busy ? 'Splitting...' : 'Split PDF'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }

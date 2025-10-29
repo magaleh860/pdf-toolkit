@@ -3,6 +3,7 @@ import { PDFDocument, degrees } from 'pdf-lib'
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRotateLeft, faRotateRight, faTrash, faRotate } from '@fortawesome/free-solid-svg-icons'
+import { FileDropZone } from '../components/FileDropZone'
 
 export function EditPage() {
   const [busy, setBusy] = useState(false)
@@ -20,8 +21,7 @@ export function EditPage() {
     setDeletedPages(new Set())
   }
 
-  function onFileChange(e) {
-    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null
+  function processFile(file) {
     setPdfFile(file)
     setPageCount(0)
     setPageThumbs([])
@@ -124,16 +124,13 @@ export function EditPage() {
   }
   return (
     <div className="edit-section">
-      <div className="edit-upload">
-        <label className="file-input-label">
-          Choose PDF to edit
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={onFileChange}
-            className="file-input"
-          />
-        </label>
+      <div className="split-section edit-upload">
+        <FileDropZone
+          onFiles={(files) => processFile(files[0])}
+          multiple={false}
+          accept="application/pdf"
+          helpText="Select a single PDF to edit its pages"
+        />
         {pdfFile && (
           <div className="file-item">
             <div className="file-info">

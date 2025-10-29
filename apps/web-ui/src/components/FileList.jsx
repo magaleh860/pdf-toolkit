@@ -4,7 +4,7 @@ import { faArrowUp, faArrowDown, faTrash } from '@fortawesome/free-solid-svg-ico
 
 export function FileList({ files, onMove, onRemove }) {
   return (
-    <div className="files">
+    <div className={files.length > 0 ? "files" : ""}>
       {files.length > 0 && (
         <div className="files-header">
           {files.length} PDF file{files.length !== 1 ? 's' : ''} selected
