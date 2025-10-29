@@ -78,6 +78,24 @@
   box-shadow: 0 8px 24px var(--shadow);
 }
 
+.feature-card-coming-soon {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.feature-card-coming-soon:hover {
+  transform: none;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.feature-card-coming-soon .feature-icon {
+  color: var(--text-secondary);
+}
+
+.feature-card-coming-soon h2 {
+  color: var(--text-secondary);
+}
+
 .feature-icon {
   font-size: 3.5rem;
   margin-bottom: 1.5rem;
