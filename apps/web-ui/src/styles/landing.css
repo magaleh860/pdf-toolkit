@@ -13,7 +13,7 @@
 .landing-intro h2 {
   font-size: 2.5rem;
   margin: 0 0 1rem;
-  background: linear-gradient(135deg, var(--accent), var(--bg-gradient-end));
+  background: linear-gradient(135deg, var(--heading-gradient-start), var(--heading-gradient-end));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -76,6 +76,24 @@
 .feature-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 8px 24px var(--shadow);
+}
+
+.feature-card-coming-soon {
+  opacity: 0.8;
+  cursor: default;
+}
+
+.feature-card-coming-soon:hover {
+  transform: none;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.feature-card-coming-soon .feature-icon {
+  color: var(--text-secondary);
+}
+
+.feature-card-coming-soon h2 {
+  color: var(--text-secondary);
 }
 
 .feature-icon {

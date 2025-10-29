@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileLines, faScissors, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { faFileLines, faScissors, faPenToSquare, faLock, faWifi, faBolt, faCircleCheck, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 
 export function LandingPage() {
   return (
@@ -15,10 +15,18 @@ export function LandingPage() {
           no server uploads, no tracking.
         </p>
         <div className="privacy-badges">
-          <span className="badge">🔒 Privacy First</span>
-          <span className="badge">📡 Works Offline</span>
-          <span className="badge">⚡ Lightning Fast</span>
-          <span className="badge">🆓 Completely Free</span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faLock} /> Privacy First
+          </span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faWifi} /> Works Offline
+          </span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faBolt} /> Lightning Fast
+          </span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faCircleCheck} /> Completely Free
+          </span>
         </div>
       </div>
 
@@ -44,6 +52,13 @@ export function LandingPage() {
           <h2>Edit PDF</h2>
           <p>Rotate, delete, and rearrange PDF pages</p>
         </Link>
+        <div className="feature-card feature-card-coming-soon">
+          <div className="feature-icon">
+            <FontAwesomeIcon icon={faEllipsis} />
+          </div>
+          <h2>More Coming Soon</h2>
+          <p>Compress, watermark, protect, and more features on the way!</p>
+        </div>
       </div>
     </div>
   )

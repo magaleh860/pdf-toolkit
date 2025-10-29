@@ -18,6 +18,8 @@ html[data-theme="light"] {
   --success: #16a34a;
   --shadow: rgba(0, 0, 0, 0.1);
   --shadow-sm: rgba(0, 0, 0, 0.05);
+  --heading-gradient-start: #3b82f6;
+  --heading-gradient-end: #764ba2;
 }
 
 html[data-theme="dark"] {
@@ -38,6 +40,8 @@ html[data-theme="dark"] {
   --success: #22c55e;
   --shadow: rgba(0, 0, 0, 0.3);
   --shadow-sm: rgba(0, 0, 0, 0.2);
+  --heading-gradient-start: #60a5fa;
+  --heading-gradient-end: #a78bfa;
 }
 
 .split-pages-list {
@@ -108,7 +112,7 @@ body::before {
   margin: 0;
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--button-primary), var(--bg-gradient-end));
+  background: linear-gradient(135deg, var(--heading-gradient-start), var(--heading-gradient-end));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
