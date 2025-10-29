@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { PDFDocument } from 'pdf-lib'
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
 import { PageThumbnails } from '../components/PageThumbnails'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 
 export function SplitPage() {
   const [busy, setBusy] = useState(false)
@@ -116,9 +118,8 @@ export function SplitPage() {
                 onClick={clearSplitFile}
                 className="icon-button remove"
                 title="Remove file"
-                style={{ color: '#dc2626' }}
               >
-                🗑️
+                <FontAwesomeIcon icon={faTrash} />
               </button>
             </div>
           </div>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { PDFDocument, degrees } from 'pdf-lib'
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRotateLeft, faRotateRight, faTrash, faRotate } from '@fortawesome/free-solid-svg-icons'
 
 export function EditPage() {
   const [busy, setBusy] = useState(false)
@@ -143,9 +145,8 @@ export function EditPage() {
                 onClick={clearFile}
                 className="icon-button remove"
                 title="Remove file"
-                style={{ color: '#dc2626' }}
               >
-                🗑️
+                <FontAwesomeIcon icon={faTrash} />
               </button>
             </div>
           </div>
@@ -171,7 +172,7 @@ export function EditPage() {
                       title="Rotate left"
                       disabled={busy}
                     >
-                      ↶
+                      <FontAwesomeIcon icon={faRotateLeft} />
                     </button>
                     <button
                       onClick={() => rotatePage(i, 'right')}
@@ -179,7 +180,7 @@ export function EditPage() {
                       title="Rotate right"
                       disabled={busy}
                     >
-                      ↷
+                      <FontAwesomeIcon icon={faRotateRight} />
                     </button>
                     <button
                       onClick={() => togglePageDeletion(i)}
@@ -188,7 +189,7 @@ export function EditPage() {
                       style={{ color: deletedPages.has(i) ? '#16a34a' : '#dc2626' }}
                       disabled={busy}
                     >
-                      {deletedPages.has(i) ? '↺' : '🗑️'}
+                      <FontAwesomeIcon icon={deletedPages.has(i) ? faRotate : faTrash} />
                     </button>
                   </div>
                 </div>

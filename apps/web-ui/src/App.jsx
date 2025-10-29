@@ -4,6 +4,8 @@ import { MergePage } from './pages/MergePage'
 import { SplitPage } from './pages/SplitPage'
 import { EditPage } from './pages/EditPage'
 import { LandingPage } from './pages/LandingPage'
+import { ThemeToggle } from './components/ThemeToggle'
+import { Footer } from './components/Footer'
 import './styles/landing.css'
 import './styles/edit.css'
 
@@ -45,7 +47,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="app">
-        <h1>PDF Toolkit — Web UI</h1>
+        <header className="app-header">
+          <h1>PDF Toolkit</h1>
+          <ThemeToggle />
+        </header>
         <Navigation />
 
         <Routes>
@@ -54,6 +59,8 @@ export default function App() {
           <Route path="/split" element={<SplitPage />} />
           <Route path="/edit" element={<EditPage />} />
         </Routes>
+
+        <Footer />
       </div>
     </BrowserRouter>
   )
