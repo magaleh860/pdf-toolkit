@@ -1,8 +1,10 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowUp, faArrowDown, faTrash } from '@fortawesome/free-solid-svg-icons'
 
 export function FileList({ files, onMove, onRemove }) {
   return (
-    <div className="files">
+    <div className={files.length > 0 ? "files" : ""}>
       {files.length > 0 && (
         <div className="files-header">
           {files.length} PDF file{files.length !== 1 ? 's' : ''} selected
@@ -23,7 +25,7 @@ export function FileList({ files, onMove, onRemove }) {
                 className="icon-button"
                 title="Move up"
               >
-                ↑
+                <FontAwesomeIcon icon={faArrowUp} />
               </button>
             )}
             {i < files.length - 1 && (
@@ -32,7 +34,7 @@ export function FileList({ files, onMove, onRemove }) {
                 className="icon-button"
                 title="Move down"
               >
-                ↓
+                <FontAwesomeIcon icon={faArrowDown} />
               </button>
             )}
             <button
@@ -40,7 +42,7 @@ export function FileList({ files, onMove, onRemove }) {
               className="icon-button remove"
               title="Remove"
             >
-              ×
+              <FontAwesomeIcon icon={faTrash} />
             </button>
           </div>
         </div>
