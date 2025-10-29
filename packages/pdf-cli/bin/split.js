@@ -32,31 +32,28 @@ function parsePageRanges(rangeStr) {
 
 async function main() {
   const args = process.argv.slice(2);
-  
-  if (args.length < 2) {
-    console.error('Usage: pdf-split <input.pdf> <output.pdf> [--pages 1,3,5-7]');
-    console.error('');
-    console.error('Options:');
-    console.error('  --pages    Page numbers to extract (1-based). Default: all pages');
-    console.error('             Examples: "1,3,5" or "1-3,5,7-10"');
-    process.exit(2);
-  }
-
-  const inputFile = args[0];
-  const outputFile = args[1];
-  
+  let inputFile = null;
+  let outputFile = null;
   let pageIndices = null;
-  
-  // Parse optional --pages flag
-  const pagesIdx = args.indexOf('--pages');
-  if (pagesIdx !== -1 && args[pagesIdx + 1]) {
-    const rangeStr = args[pagesIdx + 1];
-    try {
-      pageIndices = parsePageRanges(rangeStr);
-    } catch (err) {
-      console.error('Error parsing --pages:', err.message);
-      process.exit(2);
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '-o' && args[i + 1]) {
+      outputFile = args[i + 1];
+      i++;
+    } else if (args[i] === '-p' && args[i + 1]) {
+      try {
+        pageIndices = parsePageRanges(args[i + 1]);
+      } catch (err) {
+        console.error('Error parsing -p:', err.message);
+        process.exit(2);
+      }
+      i++;
+    } else if (!inputFile) {
+      inputFile = args[i];
     }
+  }
+  if (!inputFile || !outputFile) {
+    console.error('Usage: pdf-split <input.pdf> -o <output.pdf> [-p 1,3,5-7]');
+    process.exit(2);
   }
 
   try {
