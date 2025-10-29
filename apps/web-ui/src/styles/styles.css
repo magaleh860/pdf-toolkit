@@ -433,6 +433,20 @@ h1 {
   line-height: 1.5;
 }
 
+.footer-github-link {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+  display: inline-block;
+  margin-top: 0.25rem;
+}
+
+.footer-github-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
 .footer-bottom {
   padding-top: 1.5rem;
   border-top: 1px solid var(--card-border);

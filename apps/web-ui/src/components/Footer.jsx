@@ -27,6 +27,16 @@ export function Footer() {
             <FontAwesomeIcon icon={faGithub} /> Built with open-source technologies
           </p>
           <p>React • PDF-lib • PDF.js</p>
+          <p>
+            <a 
+              href="https://github.com/magaleh860/pdf-toolkit" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="footer-github-link"
+            >
+              View on GitHub →
+            </a>
+          </p>
         </div>
       </div>
       
