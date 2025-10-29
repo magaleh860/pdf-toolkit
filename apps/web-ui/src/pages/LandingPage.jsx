@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileLines, faScissors, faPenToSquare } from '@fortawesome/free-solid-svg-icons'
+import { faFileLines, faScissors, faPenToSquare, faLock, faWifi, faBolt, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 
 export function LandingPage() {
   return (
@@ -15,10 +15,18 @@ export function LandingPage() {
           no server uploads, no tracking.
         </p>
         <div className="privacy-badges">
-          <span className="badge">🔒 Privacy First</span>
-          <span className="badge">📡 Works Offline</span>
-          <span className="badge">⚡ Lightning Fast</span>
-          <span className="badge">🆓 Completely Free</span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faLock} /> Privacy First
+          </span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faWifi} /> Works Offline
+          </span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faBolt} /> Lightning Fast
+          </span>
+          <span className="badge">
+            <FontAwesomeIcon icon={faCircleCheck} /> Completely Free
+          </span>
         </div>
       </div>
 
