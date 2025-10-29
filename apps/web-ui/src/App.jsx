@@ -2,8 +2,10 @@ import React from 'react'
 import { BrowserRouter, Routes, Route, NavLink, useLocation } from 'react-router-dom'
 import { MergePage } from './pages/MergePage'
 import { SplitPage } from './pages/SplitPage'
+import { EditPage } from './pages/EditPage'
 import { LandingPage } from './pages/LandingPage'
 import './styles/landing.css'
+import './styles/edit.css'
 
 // Set worker source to the bundled worker
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
@@ -29,6 +31,12 @@ function Navigation() {
       >
         Split PDF
       </NavLink>
+      <NavLink 
+        to="/edit" 
+        className={({ isActive }) => isActive ? 'tab active' : 'tab'}
+      >
+        Edit PDF
+      </NavLink>
     </nav>
   )
 }
@@ -44,6 +52,7 @@ export default function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/merge" element={<MergePage />} />
           <Route path="/split" element={<SplitPage />} />
+          <Route path="/edit" element={<EditPage />} />
         </Routes>
       </div>
     </BrowserRouter>

@@ -1,0 +1,49 @@
+.edit-pages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.edit-page-item {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.edit-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: #374151;
+  font-size: 0.875rem;
+}
+
+.edit-page-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-page-actions .icon-button {
+  padding: 4px 8px;
+  font-size: 1rem;
+}
+
+.edit-page-preview {
+  position: relative;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.edit-page-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Active state for toggle buttons */
+.icon-button.active {
+  background-color: #dcfce7;
+}
