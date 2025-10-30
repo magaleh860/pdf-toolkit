@@ -5,17 +5,17 @@ Built with React, Node.js, and pdf-lib.
 
 ---
 
-## ‚ú® Features
-- Ì¥í **Privacy-first**: all operations run 100% locally, no files leave your machine.
-- Ìª†Ô∏è **Toolkit**: merge, split, rotate, and delete pages.
-- Ì≤ª **Multiple interfaces**:
+## Features
+-  **Privacy-first**: all operations run 100% locally, no files leave your machine.
+-  **Toolkit**: merge, split, rotate, and delete pages.
+-  **Multiple interfaces**:
   - CLI (`pdf-cli`) for developers and automation
   - Web app (React + Vite) for quick visual use
   - Core library (`pdf-core`) for programmatic use
 
 ---
 
-## Ì∫Ä Quick Start
+## Quick Start
 
 ### CLI
 
@@ -66,14 +66,14 @@ pnpm dev
 Then open http://localhost:5173 in your browser.
 
 Features:
-- Ì¥Ñ Drag and drop PDFs
-- Ì≥Ñ Visual page thumbnails
-- Ìæ® Dark/light mode
-- Ì≥± Fully responsive
+- Drag and drop PDFs
+- Visual page thumbnails
+- Dark/light mode
+- Fully responsive
 
 ---
 
-## Ì≥¶ Project Structure
+## Project Structure
 
 This is a pnpm monorepo with workspace packages:
 
@@ -90,7 +90,7 @@ pdf-toolkit/
 
 ---
 
-## Ìª†Ô∏è Development
+## Development
 
 ```bash
 # Install dependencies
@@ -108,12 +108,12 @@ node pdf merge test.pdf file1.pdf file2.pdf
 
 ---
 
-## Ì≥Ñ License
+## License
 
 MIT
 
 ---
 
-## Ì¥ê Privacy
+## Privacy
 
 All PDF operations run entirely in your browser (web UI) or on your local machine (CLI). **No files are ever uploaded to any server.** Your documents stay private.
