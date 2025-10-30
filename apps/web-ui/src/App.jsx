@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route, NavLink, useLocation, Link } from 'react-router-dom'
+import { HashRouter, Routes, Route, NavLink, useLocation, Link } from 'react-router-dom'
 import { MergePage } from './pages/MergePage'
 import { SplitPage } from './pages/SplitPage'
 import { EditPage } from './pages/EditPage'
@@ -15,7 +15,7 @@ import './styles/about.css'
 
 // Set worker source to the bundled worker
 import * as pdfjsLib from 'pdfjs-dist/build/pdf.min.mjs'
-pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js'
+pdfjsLib.GlobalWorkerOptions.workerSrc = `${import.meta.env.BASE_URL}pdf.worker.js`
 
 // Navigation component
 function Navigation() {
@@ -49,7 +49,7 @@ function Navigation() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="app">
         <header className="app-header">
           <Link to="/" className="header-title">
@@ -74,6 +74,6 @@ export default function App() {
 
         <Footer />
       </div>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
