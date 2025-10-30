@@ -4,13 +4,20 @@ const { mergeFiles } = require('@pdf-toolkit/pdf-core');
 
 async function main() {
   const args = process.argv.slice(2);
-  if (args.length < 3 || args[0] !== 'merge') {
-    console.error('Usage: pdf-merge merge <out.pdf> <in1.pdf> [in2.pdf ...]');
+  let out = null;
+  const inputs = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '-o' && args[i + 1]) {
+      out = args[i + 1];
+      i++;
+    } else {
+      inputs.push(args[i]);
+    }
+  }
+  if (!out || inputs.length < 1) {
+    console.error('Usage: pdf-merge <input1.pdf> [input2.pdf ...] -o <output.pdf>');
     process.exit(2);
   }
-
-  const out = args[1];
-  const inputs = args.slice(2);
   try {
     await mergeFiles(inputs, out);
     console.log(`✅ Merged ${inputs.length} files -> ${out}`);

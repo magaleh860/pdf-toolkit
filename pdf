@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+
+const { spawn } = require('child_process');
+const path = require('path');
+
+const command = process.argv[2];
+const args = process.argv.slice(3);
+
+const commands = {
+  merge: 'packages/pdf-cli/bin/merge.js',
+  split: 'packages/pdf-cli/bin/split.js',
+  edit: 'packages/pdf-cli/bin/edit.js'
+};
+
+if (!command || !commands[command]) {
+  console.error('Usage: pdf <command> [options]');
+  console.error('');
+  console.error('Available commands:');
+  console.error('  merge    Merge multiple PDFs into one');
+  console.error('  split    Extract pages from a PDF');
+  console.error('  edit     Rotate and delete pages');
+  console.error('');
+  console.error('Examples:');
+  console.error('  pdf merge output.pdf input1.pdf input2.pdf');
+  console.error('  pdf split input.pdf output.pdf --pages 1,3,5-7');
+  console.error('  pdf edit input.pdf output.pdf --rotate 1:90 --delete 3');
+  process.exit(1);
+}
+
+const scriptPath = path.join(__dirname, commands[command]);
+const child = spawn('node', [scriptPath, ...args], { stdio: 'inherit' });
+
+child.on('exit', (code) => {
+  process.exit(code);
+});

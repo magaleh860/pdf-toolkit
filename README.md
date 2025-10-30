@@ -1,22 +1,119 @@
 # PDF Toolkit
 
-**Privacy-first PDF toolkit** â€” merge, split, rotate, and secure PDF files without uploading them to shady online services.  
-Built with TypeScript, React, and Node.js.
+**Privacy-first PDF toolkit** â€” merge, split, rotate, and edit PDF files without uploading them to shady online services.  
+Built with React, Node.js, and pdf-lib.
 
 ---
 
 ## âœ¨ Features
-- ğŸ”’ **Privacy-first**: all operations can run locally, no files leave your machine.
-- ğŸ› ï¸ **Toolkit**: merge, split, rotate, and add metadata.
-- ğŸ’» **Multiple interfaces**:
-  - CLI (`@morshid/pdf-cli`) for developers
-  - Web app (React) for quick use
-  - API service (Nest.js) for automation
+- í´’ **Privacy-first**: all operations run 100% locally, no files leave your machine.
+- í» ï¸ **Toolkit**: merge, split, rotate, and delete pages.
+- í²» **Multiple interfaces**:
+  - CLI (`pdf-cli`) for developers and automation
+  - Web app (React + Vite) for quick visual use
+  - Core library (`pdf-core`) for programmatic use
 
 ---
 
-## ğŸš€ Quick Start
+## íº€ Quick Start
 
 ### CLI
+
+Run commands from the project root:
+
 ```bash
-npx @morshid/pdf-cli merge file1.pdf file2.pdf -o merged.pdf
+# Display help
+node pdf
+
+# Merge PDFs
+node pdf merge output.pdf input1.pdf input2.pdf input3.pdf
+
+# Split/extract specific pages (1-based page numbers)
+node pdf split input.pdf output.pdf --pages 1,3,5-7
+
+# Edit PDF: rotate and/or delete pages
+node pdf edit input.pdf output.pdf --rotate 1:90,2:180 --delete 3,5-7
+```
+
+**Command Reference:**
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `merge` | Combine multiple PDFs into one | `node pdf merge out.pdf file1.pdf file2.pdf` |
+| `split` | Extract specific pages | `node pdf split in.pdf out.pdf --pages 1-3,5` |
+| `edit`  | Rotate/delete pages | `node pdf edit in.pdf out.pdf --rotate 1:90 --delete 2` |
+
+**Page number formats:**
+- Single pages: `1,3,5`
+- Ranges: `1-5` (pages 1 through 5)
+- Combined: `1,3-5,7,10-12`
+- All page numbers are **1-based** (first page = 1)
+
+**Rotation angles:**
+- `90` - rotate 90Â° clockwise
+- `180` - rotate 180Â°
+- `270` or `-90` - rotate 90Â° counter-clockwise
+
+### Web UI
+
+Start the development server:
+
+```bash
+cd apps/web-ui
+pnpm dev
+```
+
+Then open http://localhost:5173 in your browser.
+
+Features:
+- í´„ Drag and drop PDFs
+- í³„ Visual page thumbnails
+- í¾¨ Dark/light mode
+- í³± Fully responsive
+
+---
+
+## í³¦ Project Structure
+
+This is a pnpm monorepo with workspace packages:
+
+```
+pdf-toolkit/
+â”œâ”€â”€ packages/
+â”‚   â”œâ”€â”€ pdf-core/        # Core PDF manipulation functions
+â”‚   â””â”€â”€ pdf-cli/         # Command-line interface
+â”œâ”€â”€ apps/
+â”‚   â”œâ”€â”€ web-ui/          # React web application
+â”‚   â””â”€â”€ api-service/     # (Future) REST API
+â””â”€â”€ pdf                  # CLI wrapper script
+```
+
+---
+
+## í» ï¸ Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run web UI in dev mode
+pnpm -F @pdf-toolkit/web-ui dev
+
+# Build web UI for production
+pnpm -F @pdf-toolkit/web-ui build
+
+# Test CLI commands
+node pdf merge test.pdf file1.pdf file2.pdf
+```
+
+---
+
+## í³„ License
+
+MIT
+
+---
+
+## í´ Privacy
+
+All PDF operations run entirely in your browser (web UI) or on your local machine (CLI). **No files are ever uploaded to any server.** Your documents stay private.
